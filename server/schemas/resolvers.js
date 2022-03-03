@@ -1,3 +1,5 @@
+
+const { AuthenticationError } = require("apollo-server-express");
 const User = require("../models/User");
 const { signToken } = require("../utils/auth");
 
@@ -36,6 +38,19 @@ const resolvers = {
             const token = signToken(user);
             return { token, user };
           },
+          saveBook: async (parent, { input }, context) => {
+              if (context.user) {
+                  const editedUser = await User.findOneAndUpdate(
+                      { _id: context.user._id },
+                      { $push: { savedBooks: input } },
+                      { new: true, runValidators: true }
+                  );
+                  return editedUser;
+              }
+              throw new AuthenticationError('Incorrect credentials');
+          }
     }
 
 }
+
+module.exports = resolvers;
