@@ -48,9 +48,20 @@ const resolvers = {
                   return editedUser;
               }
               throw new AuthenticationError('Incorrect credentials');
+          },
+          removeBook: async (parent, { bookId }, context) => {
+              if(context.user) {
+                  const editedUser = await User.findOneAndUpdate(
+                      { _id: context.user._id },
+                      { $pull: { savedBooks: { bookId: bookId } } },
+                      { new: true }
+                  );
+                  return editedUser;
+              }
+              throw new AuthenticationError('Incorrect credentials');
           }
     }
 
-}
+};
 
 module.exports = resolvers;
