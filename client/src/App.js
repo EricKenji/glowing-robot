@@ -5,13 +5,23 @@ import {
   InMemoryCache,
   ApolloProvider,
   createHttpLink,
-} from '@apollo/client'
+} from '@apollo/client';
 import SearchBooks from './pages/SearchBooks';
 import SavedBooks from './pages/SavedBooks';
 import Navbar from './components/Navbar';
 
+const httpLink = createHttpLink({
+  uri: '/graphql',
+})
+
+const client = new ApolloClient({
+  link: httpLink,
+  cache: new InMemoryCache(),
+})
+
 function App() {
   return (
+    <ApolloProvider client={client}>
     <Router>
       <>
         <Navbar />
@@ -22,6 +32,7 @@ function App() {
         </Switch>
       </>
     </Router>
+    </ApolloProvider>
   );
 }
 
